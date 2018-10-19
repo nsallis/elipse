@@ -4,39 +4,46 @@ package workers
 
 import (
   "io/ioutil"
-  "path/filepath"
+  // "path/filepath"
+  "fmt"
 )
 
-type DFINode struct {
-  filename string
-  value string
-  err error
-}
+type DFINode NodeStruct
 
-func (n *DFINode) Input(d Document, config Configuration) { // will eventually take a document
+func (n *DFINode) Setup() { // will eventually take a document
   // var _ Node = DFINode{}
-  // TODO get file name from configuration
-  if str, ok := config["filename"].(string); ok {
-    n.filename = str
-  } else {
-    // TODO throw bad config
-    /* not string */
+  // TODO check if file path is valid
+  // TODO get the absolute path of the file
+  if str, ok := n.Config["filename"].(string); ok {
+    n.Config["filename"] = str
   }
 }
 
-func (n *DFINode) Process() {
-  filename, _ := filepath.Abs(n.filename)
+func (n *DFINode) Process() { // Just an empty document since this is an input node
+  // inputChannel := n.InputChannel
+  // TODO ignore input channel
+  // TODO listen for file changes or run on current file if this is first time running
+  // TODO create document from file
+  // TODO output via outputChannel
 
-  fileContents, err := ioutil.ReadFile(filename) // TODO can't find the file for some reason!
-  n.value = string(fileContents)
-  n.err = err
-}
+  if str, ok := n.Config["filename"].(string); ok {
+    fileContents, err := ioutil.ReadFile(str)
+    fmt.Println(string(fileContents), err)
+  }
+  for{
+    select {
+    case command := <- n.ControlChannel:
+      if(command == "exit"){
+        close(n.InputChannel)
+        close(n.OutputChannel)
+        close(n.ControlChannel)
+        close(n.ErrorChannel)
+        break
+      }
+    default:
+      // fmt.Println("Processing...")
+      // TODO watch for file changes and process them
+    }
+  }
 
-func (n *DFINode) Output() Document { // will eventually return document
-  returnDoc := Document{Value: []byte(n.value)}
-  return returnDoc
-}
-
-func (n *DFINode) Error() NodeError { // if there is an error operating on this node, call this
-  return n.err
 }
