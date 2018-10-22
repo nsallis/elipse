@@ -22,6 +22,7 @@ func main() {
   }
   // init_doc := workers.Document{Value: []byte(""), Errors: []error{}}
 
+
   dfi_node.Setup()
   go dfi_node.Process()
   fmt.Println("waiting to finish processing...")

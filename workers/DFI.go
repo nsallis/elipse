@@ -6,6 +6,8 @@ import (
   "io/ioutil"
   // "path/filepath"
   "fmt"
+  "github.com/fsnotify/fsnotify"
+  "time"
 )
 
 type DFINode NodeStruct
@@ -19,17 +21,23 @@ func (n *DFINode) Setup() { // will eventually take a document
   }
 }
 
-func (n *DFINode) Process() { // Just an empty document since this is an input node
-  // inputChannel := n.InputChannel
-  // TODO ignore input channel
-  // TODO listen for file changes or run on current file if this is first time running
+func (n *DFINode) Process() {
   // TODO create document from file
   // TODO output via outputChannel
+
+  var filepath string
+  if str, ok := n.Config["filename"].(string); ok {
+    filepath = str
+  }
 
   if str, ok := n.Config["filename"].(string); ok {
     fileContents, err := ioutil.ReadFile(str)
     fmt.Println(string(fileContents), err)
   }
+  // var watcher *fsnotify.Watcher
+  watcher, _ := fsnotify.NewWatcher()
+  // defer watcher.Close()
+  watcher.Add(filepath)
   for{
     select {
     case command := <- n.ControlChannel:
@@ -40,10 +48,31 @@ func (n *DFINode) Process() { // Just an empty document since this is an input n
         close(n.ErrorChannel)
         break
       }
+    case event := <- watcher.Events:
+      switch {
+      case event.Op == fsnotify.Write:
+        fmt.Println("wrote to the file")
+        fileContents, _ := ioutil.ReadFile(event.Name)
+        createDocFromNode(n, fileContents)
+      case event.Op == fsnotify.Create:
+        fmt.Println("created a file in a watched directory")
+      default:
+
+      }
+      fmt.Println(event)
     default:
-      // fmt.Println("Processing...")
-      // TODO watch for file changes and process them
+      time.Sleep(time.Second * 1)
     }
   }
-
 }
+
+func createDocFromNode(node *DFINode, fileContents []byte) Document {
+
+  fmt.Println("file contents to create doc from: " + string(fileContents))
+  var filepath string
+  if str, ok := node.Config["filename"].(string); ok {
+    filepath = str
+  }
+  return Document{Value: fileContents, Source: filepath, SourceType: "disk"}
+}
+
