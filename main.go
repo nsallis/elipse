@@ -3,7 +3,8 @@ package main
 import (
   "fmt"
   "github.com/nsallis/elipse/workers"
-  "time"
+  // "time"
+  // "bufio"
   // "os"
 )
 
@@ -20,18 +21,28 @@ func main() {
     ControlChannel: controlChannel,
     Config: dfi_config,
   }
-  // init_doc := workers.Document{Value: []byte(""), Errors: []error{}}
+
+  var command string
 
 
   dfi_node.Setup()
   go dfi_node.Process()
   fmt.Println("waiting to finish processing...")
-  time.Sleep(time.Second * 3)
-  dfi_node.ControlChannel <- "exit"
-  fmt.Println(<- dfi_node.OutputChannel)
+
+  for { // main running loop
+    fmt.Println( <- outputChannel ) // we need to pull from the channel so we don't block
+    fmt.Scanln(&command)
+    if(command != "") {
+      if(command == "exit") {
+        dfi_node.ControlChannel <- command
+        break
+
+      }
+    }
+  }
+  // fmt.Println(<- dfi_node.OutputChannel)
   // dfo_node := &workers.DFONode{}
   // dfo_node.Input("./test_data/dfo_test.txt", []byte("dfo test here"), os.FileMode(int(0777)))
   // dfo_node.Process()
   // fmt.Println(string(dfi_node.Output().Value))
-  fmt.Println("hello world")
 }

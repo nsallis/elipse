@@ -12,7 +12,7 @@ import (
 
 type DFINode NodeStruct
 
-func (n *DFINode) Setup() { // will eventually take a document
+func (n *DFINode) Setup() {
   // var _ Node = DFINode{}
   // TODO check if file path is valid
   // TODO get the absolute path of the file
@@ -22,18 +22,16 @@ func (n *DFINode) Setup() { // will eventually take a document
 }
 
 func (n *DFINode) Process() {
-  // TODO create document from file
-  // TODO output via outputChannel
-
   var filepath string
   if str, ok := n.Config["filename"].(string); ok {
     filepath = str
   }
 
   if str, ok := n.Config["filename"].(string); ok {
-    fileContents, err := ioutil.ReadFile(str)
-    fmt.Println(string(fileContents), err)
+    fileContents, _ := ioutil.ReadFile(str)
+    n.OutputChannel <- createDocFromNode(n, fileContents) // TODO this is blocking!
   }
+
   // var watcher *fsnotify.Watcher
   watcher, _ := fsnotify.NewWatcher()
   // defer watcher.Close()
@@ -42,6 +40,7 @@ func (n *DFINode) Process() {
     select {
     case command := <- n.ControlChannel:
       if(command == "exit"){
+        fmt.Println("exiting...")
         close(n.InputChannel)
         close(n.OutputChannel)
         close(n.ControlChannel)
@@ -53,7 +52,7 @@ func (n *DFINode) Process() {
       case event.Op == fsnotify.Write:
         fmt.Println("wrote to the file")
         fileContents, _ := ioutil.ReadFile(event.Name)
-        createDocFromNode(n, fileContents)
+        n.OutputChannel <- createDocFromNode(n, fileContents)
       case event.Op == fsnotify.Create:
         fmt.Println("created a file in a watched directory")
       default:
