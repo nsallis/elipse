@@ -15,6 +15,7 @@ func main() {
   errorChannel := make(chan error, 100)
   dfi_config := workers.Configuration{"filename": "./test_data/dfi_test.txt"}
   dfi_node := &workers.DFINode{
+    UUID: "1",
     InputChannel: inputChannel,
     OutputChannel: outputChannel,
     ErrorChannel: errorChannel,
@@ -25,6 +26,7 @@ func main() {
   stdOutChan := make(chan workers.Document, 100)
   stcCommandChan := make(chan string)
   out_node := &workers.StdOutNode{
+    UUID: "2",
     InputChannel: outputChannel,
     OutputChannel: stdOutChan,
     ControlChannel: stcCommandChan,

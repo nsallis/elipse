@@ -15,6 +15,7 @@ type Node interface {
 }
 
 type NodeStruct struct {
+  UUID string // make this a UUID eventually
   InputChannel chan Document
   OutputChannel chan Document
   ErrorChannel chan error

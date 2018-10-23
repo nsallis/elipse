@@ -1,0 +1,18 @@
+{
+  "workers":
+  {
+    "1": {
+      "type": "DFI",
+      "config": {"filename": "./test_data/dfi_test.txt"},
+      "outputs": ["2"],
+      "errors": []
+    },
+    "2": {
+      "type": "StdOut",
+      "config": "{}",
+      "outputs": [],
+      "errors": []
+    }
+  }
+
+}
