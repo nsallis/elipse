@@ -29,22 +29,17 @@ func (n *DFINode) Process() {
 
   if str, ok := n.Config["filename"].(string); ok {
     fileContents, _ := ioutil.ReadFile(str)
-    n.OutputChannel <- createDocFromNode(n, fileContents) // TODO this is blocking!
+    n.OutputChannel <- createDocFromNode(n, fileContents)
   }
 
-  // var watcher *fsnotify.Watcher
   watcher, _ := fsnotify.NewWatcher()
-  // defer watcher.Close()
+  defer watcher.Close()
   watcher.Add(filepath)
   for{
     select {
     case command := <- n.ControlChannel:
       if(command == "exit"){
-        fmt.Println("exiting...")
-        close(n.InputChannel)
-        close(n.OutputChannel)
-        close(n.ControlChannel)
-        close(n.ErrorChannel)
+        fmt.Println("exiting DFI...")
         break
       }
     case event := <- watcher.Events:
@@ -60,14 +55,13 @@ func (n *DFINode) Process() {
       }
       fmt.Println(event)
     default:
-      time.Sleep(time.Second * 1)
+      time.Sleep(time.Millisecond * 100) // dictates responsiveness
     }
   }
 }
 
 func createDocFromNode(node *DFINode, fileContents []byte) Document {
 
-  fmt.Println("file contents to create doc from: " + string(fileContents))
   var filepath string
   if str, ok := node.Config["filename"].(string); ok {
     filepath = str

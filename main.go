@@ -9,10 +9,10 @@ import (
 )
 
 func main() {
-  inputChannel := make(chan workers.Document)
-  outputChannel := make(chan workers.Document)
+  inputChannel := make(chan workers.Document, 100)
+  outputChannel := make(chan workers.Document, 100)
   controlChannel := make(chan string)
-  errorChannel := make(chan error)
+  errorChannel := make(chan error, 100)
   dfi_config := workers.Configuration{"filename": "./test_data/dfi_test.txt"}
   dfi_node := &workers.DFINode{
     InputChannel: inputChannel,
@@ -22,27 +22,33 @@ func main() {
     Config: dfi_config,
   }
 
+  stdOutChan := make(chan workers.Document, 100)
+  stcCommandChan := make(chan string)
+  out_node := &workers.StdOutNode{
+    InputChannel: outputChannel,
+    OutputChannel: stdOutChan,
+    ControlChannel: stcCommandChan,
+    ErrorChannel: errorChannel,
+    Config: workers.Configuration{},
+  }
+
   var command string
 
-
   dfi_node.Setup()
+  out_node.Setup()
   go dfi_node.Process()
-  fmt.Println("waiting to finish processing...")
+  go out_node.Process()
+  fmt.Println("Started processing...\n")
 
   for { // main running loop
-    fmt.Println( <- outputChannel ) // we need to pull from the channel so we don't block
     fmt.Scanln(&command)
     if(command != "") {
+      dfi_node.ControlChannel <- command
+      out_node.ControlChannel <- command
       if(command == "exit") {
-        dfi_node.ControlChannel <- command
+        fmt.Println("Waiting for nodes to exit...")
         break
-
       }
     }
   }
-  // fmt.Println(<- dfi_node.OutputChannel)
-  // dfo_node := &workers.DFONode{}
-  // dfo_node.Input("./test_data/dfo_test.txt", []byte("dfo test here"), os.FileMode(int(0777)))
-  // dfo_node.Process()
-  // fmt.Println(string(dfi_node.Output().Value))
 }
