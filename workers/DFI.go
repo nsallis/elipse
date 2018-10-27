@@ -12,6 +12,14 @@ import (
 
 type DFINode NodeStruct
 
+func (n *DFINode) SetUUID(uuid string) {
+	n.UUID = uuid
+}
+
+func (n *DFINode) SetConfig(config map[string]string) {
+	n.Config = config
+}
+
 func (n *DFINode) Setup() {
 	// var _ Node = DFINode{}
 	// TODO check if file path is valid

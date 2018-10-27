@@ -27,12 +27,28 @@ func CreateWorkerConfig(jsonString string) []workers.WorkerConfig { // needs to 
 // getNodeFromTypeString returns the type of node we need based on
 // the type string. Also asserts the node type implements Node interface
 func getNodeFromTypeString(typeName string) workers.Node {
+	var node workers.Node
 	switch typeName {
 	case "DFI":
-		return &workers.DFINode{}
+		node = &workers.DFINode{}
 	case "StdOut":
-		return &workers.StdOutNode{}
+		// node = &workers.StdOutNode{}
 	default:
-		return &workers.DFINode{}
+		node = &workers.DFINode{}
 	}
+	return node
+}
+
+func spawnWorker(config workers.WorkerConfig) error {
+	node := getNodeFromTypeString(config.NodeType)
+	node.SetUUID(config.UUID)
+	node.SetConfig(config.Config)
+	return nil
+}
+
+func SpawnWorkers(configs []workers.WorkerConfig) []error {
+	for _, config := range configs {
+		spawnWorker(config)
+	}
+	return nil
 }

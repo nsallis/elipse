@@ -1,6 +1,8 @@
 package workers
 
-// WorkerConfig configuration for all workers. Used in building nodes from json
+// WorkerConfig configuration for all workers.
+// Used in building nodes from json
+// TODO should probably be moved to spawner
 type WorkerConfig struct {
 	UUID     string
 	NodeType string
@@ -15,6 +17,8 @@ type WorkerConfig struct {
 type Node interface {
 	Setup() // will eventually take a document
 	Process()
+	SetUUID(string)              // setter
+	SetConfig(map[string]string) // setter
 	// Output() Document // should always return a document
 	// Error() (NodeError) // should always return an error or nil
 }
