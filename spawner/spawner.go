@@ -23,3 +23,10 @@ func CreateWorkerConfig(jsonString string) []workers.WorkerConfig { // needs to 
 	}
 	return config
 }
+
+// func getNodeFromTypeString(typeName string) workers.Node {
+// 	switch typeName {
+// 	case "DFI":
+// 		return workers.DFINode{}
+// 	}
+// }

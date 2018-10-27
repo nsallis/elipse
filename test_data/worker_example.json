@@ -2,11 +2,10 @@
   {
     "UUID": "1",
     "nodeType": "DFI",
-    "config": [
+    "config": 
       {
         "filename": "./test_data/dfi_test.txt"
-      }
-    ],
+      },
     "outputs": [
       "2"
     ],
@@ -15,9 +14,9 @@
   {
     "UUID": "2",
     "type": "StdOut",
-    "config": [
+    "config": {
 
-    ],
+    },
     "outputs": [],
     "errors": []
   }

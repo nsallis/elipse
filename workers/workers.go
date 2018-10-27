@@ -4,7 +4,7 @@ package workers
 type WorkerConfig struct {
 	UUID     string
 	NodeType string
-	Config   []map[string]string
+	Config   map[string]string
 	Outputs  []string
 	Errors   []string
 }
