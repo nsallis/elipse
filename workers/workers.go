@@ -1,6 +1,6 @@
 package workers
 
-// WorkerConfig configuration for all workers
+// WorkerConfig configuration for all workers. Used in building nodes from json
 type WorkerConfig struct {
 	UUID     string
 	NodeType string
@@ -27,5 +27,5 @@ type NodeStruct struct {
 	OutputChannel  chan Document
 	ErrorChannel   chan error
 	ControlChannel chan string // to "exit", "pause" etc.
-	Config         WorkerConfig
+	Config         map[string]string
 }

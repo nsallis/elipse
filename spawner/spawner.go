@@ -24,9 +24,15 @@ func CreateWorkerConfig(jsonString string) []workers.WorkerConfig { // needs to 
 	return config
 }
 
-// func getNodeFromTypeString(typeName string) workers.Node {
-// 	switch typeName {
-// 	case "DFI":
-// 		return workers.DFINode{}
-// 	}
-// }
+// getNodeFromTypeString returns the type of node we need based on
+// the type string. Also asserts the node type implements Node interface
+func getNodeFromTypeString(typeName string) workers.Node {
+	switch typeName {
+	case "DFI":
+		return &workers.DFINode{}
+	case "StdOut":
+		return &workers.StdOutNode{}
+	default:
+		return &workers.DFINode{}
+	}
+}
