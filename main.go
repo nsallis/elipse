@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/nsallis/elipse/spawner"
-	"github.com/nsallis/elipse/workers"
+	// "github.com/nsallis/elipse/util"
 	// "time"
 	// "bufio"
 	// "os"
@@ -12,52 +12,53 @@ import (
 
 func main() {
 
-	fmt.Println(spawner.CreateWorkerConfigFromFile("./test_data/worker_example.json"))
+	configJSON := spawner.CreateWorkerConfigFromFile("./test_data/worker_example.json")
+	fmt.Println(configJSON[0].Config[0]["filename"])
 
 	//***************************
-	inputChannel := make(chan workers.Document, 100)
-	outputChannel := make(chan workers.Document, 100)
-	controlChannel := make(chan string)
-	errorChannel := make(chan error, 100)
-	dfiConfig := workers.Configuration{"filename": "./test_data/dfi_test.txt"}
-	dfiNode := &workers.DFINode{
-		UUID:           "1",
-		InputChannel:   inputChannel,
-		OutputChannel:  outputChannel,
-		ErrorChannel:   errorChannel,
-		ControlChannel: controlChannel,
-		Config:         dfiConfig,
-	}
+	// inputChannel := make(chan workers.Document, 100)
+	// outputChannel := make(chan workers.Document, 100)
+	// controlChannel := make(chan string)
+	// errorChannel := make(chan error, 100)
+	// dfiConfig := workers.Configuration{"filename": "./test_data/dfi_test.txt"}
+	// dfiNode := &workers.DFINode{
+	// 	UUID:           "1",
+	// 	InputChannel:   inputChannel,
+	// 	OutputChannel:  outputChannel,
+	// 	ErrorChannel:   errorChannel,
+	// 	ControlChannel: controlChannel,
+	// 	Config:         dfiConfig,
+	// }
 
-	stdOutChan := make(chan workers.Document, 100)
-	stcCommandChan := make(chan string)
-	outNode := &workers.StdOutNode{
-		UUID:           "2",
-		InputChannel:   outputChannel,
-		OutputChannel:  stdOutChan,
-		ControlChannel: stcCommandChan,
-		ErrorChannel:   errorChannel,
-		Config:         workers.Configuration{},
-	}
+	// stdOutChan := make(chan workers.Document, 100)
+	// stcCommandChan := make(chan string)
+	// outNode := &workers.StdOutNode{
+	// 	UUID:           "2",
+	// 	InputChannel:   outputChannel,
+	// 	OutputChannel:  stdOutChan,
+	// 	ControlChannel: stcCommandChan,
+	// 	ErrorChannel:   errorChannel,
+	// 	Config:         workers.Configuration{},
+	// }
 
-	var command string
+	// var command string
 
-	dfiNode.Setup()
-	outNode.Setup()
-	go dfiNode.Process()
-	go outNode.Process()
-	fmt.Println("Started processing...")
-	fmt.Println("")
+	// dfiNode.Setup()
+	// outNode.Setup()
+	// go dfiNode.Process()
+	// go outNode.Process()
+	// fmt.Println("Started processing...")
+	// fmt.Println("")
 
-	for { // main running loop
-		fmt.Scanln(&command)
-		if command != "" {
-			dfiNode.ControlChannel <- command
-			outNode.ControlChannel <- command
-			if command == "exit" {
-				fmt.Println("Waiting for nodes to exit...")
-				break
-			}
-		}
-	}
+	// for { // main running loop
+	// 	fmt.Scanln(&command)
+	// 	if command != "" {
+	// 		dfiNode.ControlChannel <- command
+	// 		outNode.ControlChannel <- command
+	// 		if command == "exit" {
+	// 			fmt.Println("Waiting for nodes to exit...")
+	// 			break
+	// 		}
+	// 	}
+	// }
 }
