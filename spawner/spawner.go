@@ -46,6 +46,7 @@ func spawnWorker(config workers.WorkerConfig) error {
 	return nil
 }
 
+// SpawnWorkers spawns workers from the config
 func SpawnWorkers(configs []workers.WorkerConfig) []error {
 	for _, config := range configs {
 		spawnWorker(config)
