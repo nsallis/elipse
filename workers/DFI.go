@@ -10,17 +10,23 @@ import (
 	"time"
 )
 
-type DFINode NodeStruct
+type DFINode struct {
+	BaseNode
+}
 
-func (n *DFINode) SetUUID(uuid string) {
+func (n DFINode) GetNodeType() string {
+	return "DFI"
+}
+
+func (n DFINode) SetUUID(uuid string) {
 	n.UUID = uuid
 }
 
-func (n *DFINode) SetConfig(config map[string]string) {
+func (n DFINode) SetConfig(config map[string]string) {
 	n.Config = config
 }
 
-func (n *DFINode) Setup() {
+func (n DFINode) Setup() {
 	// var _ Node = DFINode{}
 	// TODO check if file path is valid
 	// TODO get the absolute path of the file
@@ -29,7 +35,7 @@ func (n *DFINode) Setup() {
 	}
 }
 
-func (n *DFINode) Process() {
+func (n DFINode) Process() {
 	var filepath string
 	if str, ok := n.Config["filename"]; ok {
 		filepath = str
@@ -68,7 +74,7 @@ func (n *DFINode) Process() {
 	}
 }
 
-func createDocFromNode(node *DFINode, fileContents []byte) Document {
+func createDocFromNode(node DFINode, fileContents []byte) Document {
 
 	var filepath string
 	if str, ok := node.Config["filename"]; ok {

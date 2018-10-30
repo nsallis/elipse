@@ -19,17 +19,78 @@ type Node interface {
 	Process()
 	SetUUID(string)              // setter
 	SetConfig(map[string]string) // setter
+	SetInput(chan Document)
+	SetOutput(chan Document)
+	SetError(chan error)
+	SetControl(chan string)
+	GetInput() chan Document
+	GetOutput() chan Document
+	GetError() chan error
+	GetControl() chan string
+	GetNodeType() string
 	// Output() Document // should always return a document
 	// Error() (NodeError) // should always return an error or nil
 }
 
 // NodeStruct defined all of the values on a node. Every type of
 // Node is of type NodeStruct
-type NodeStruct struct {
+type BaseNode struct {
 	UUID           string // make this a UUID eventually
 	InputChannel   chan Document
 	OutputChannel  chan Document
 	ErrorChannel   chan error
 	ControlChannel chan string // to "exit", "pause" etc.
 	Config         map[string]string
+}
+
+func (n BaseNode) Setup() {
+	panic("not implemented")
+}
+
+func (n BaseNode) Process() {
+	panic("not implemented")
+}
+
+func (n BaseNode) SetUUID(uuid string) {
+	panic("not implemented")
+}
+
+func (n BaseNode) SetConfig(config map[string]string) {
+	panic("not implemented")
+}
+
+func (n BaseNode) SetInput(input chan Document) {
+	n.InputChannel = input
+}
+
+func (n BaseNode) SetOutput(input chan Document) {
+	n.OutputChannel = input
+}
+
+func (n BaseNode) SetError(err chan error) {
+	n.ErrorChannel = err
+}
+
+func (n BaseNode) SetControl(control chan string) {
+	n.ControlChannel = control
+}
+
+func (n BaseNode) GetInput() chan Document {
+	return n.InputChannel
+}
+
+func (n BaseNode) GetOutput() chan Document {
+	return n.OutputChannel
+}
+
+func (n BaseNode) GetError() chan error {
+	return n.ErrorChannel
+}
+
+func (n BaseNode) GetControl() chan string {
+	return n.ControlChannel
+}
+
+func (n BaseNode) GetNodeType() string {
+	return "BaseNode"
 }

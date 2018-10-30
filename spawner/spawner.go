@@ -2,6 +2,7 @@ package spawner
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/nsallis/elipse/util"
 	"github.com/nsallis/elipse/workers"
 )
@@ -30,17 +31,19 @@ func getNodeFromTypeString(typeName string) workers.Node {
 	var node workers.Node
 	switch typeName {
 	case "DFI":
-		node = &workers.DFINode{}
+		node = workers.DFINode{}
 	case "StdOut":
 		// node = &workers.StdOutNode{}
 	default:
-		node = &workers.DFINode{}
+		node = workers.BaseNode{} // TODO this will eventually throw a not implemented
+		// error because SetUUID is not implemented
 	}
 	return node
 }
 
 func spawnWorker(config workers.WorkerConfig) error {
 	node := getNodeFromTypeString(config.NodeType)
+	fmt.Println("node: " + node.GetNodeType())
 	node.SetUUID(config.UUID)
 	node.SetConfig(config.Config)
 	return nil
