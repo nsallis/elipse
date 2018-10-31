@@ -14,7 +14,8 @@ func main() {
 
 	config := spawner.CreateWorkerConfigFromFile("./test_data/worker_example.json")
 	fmt.Println(config[0].Config["filename"])
-	fmt.Println(spawner.SpawnWorkers(config))
+	workersMap, _ := spawner.SpawnWorkers(config)
+	spawner.ConnectWorkers(workersMap, config)
 
 	//***************************
 	// inputChannel := make(chan workers.Document, 100)

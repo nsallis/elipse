@@ -1,5 +1,7 @@
 package workers
 
+import "fmt"
+
 // WorkerConfig configuration for all workers.
 // Used in building nodes from json
 // TODO should probably be moved to spawner
@@ -30,6 +32,7 @@ type Node interface {
 	GetError() chan error
 	GetControl() chan string
 	GetNodeType() string
+	ToString() string
 	// Output() Document // should always return a document
 	// Error() (NodeError) // should always return an error or nil
 }
@@ -103,4 +106,8 @@ func (n BaseNode) GetControl() chan string {
 
 func (n BaseNode) GetNodeType() string {
 	return "BaseNode"
+}
+
+func (n BaseNode) ToString() string {
+	return fmt.Sprintf("")
 }

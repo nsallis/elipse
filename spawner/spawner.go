@@ -2,7 +2,7 @@ package spawner
 
 import (
 	"encoding/json"
-	"fmt"
+	// "fmt"
 	"github.com/nsallis/elipse/util"
 	"github.com/nsallis/elipse/workers"
 )
@@ -56,4 +56,27 @@ func SpawnWorkers(configs []workers.WorkerConfig) (map[string]workers.Node, []er
 		workersMap[worker.GetUUID()] = worker
 	}
 	return workersMap, nil
+}
+
+func ConnectWorkers(workersMap map[string]workers.Node, configs []workers.WorkerConfig) {
+	for _, v := range workersMap {
+		inChannel := make(chan workers.Document, 100) // TODO make the channel buffer length configurable
+		outChannel := make(chan workers.Document, 100)
+		contChannel := make(chan string)
+		errChannel := make(chan error)
+		v.SetInput(inChannel)
+		v.SetOutput(outChannel)
+		v.SetControl(contChannel)
+		v.SetError(errChannel)
+	}
+
+	var i int
+	for _, v := range workersMap {
+		outputUUIDS := configs[i].Outputs
+		if len(outputUUIDS) > 0 {
+			attachedNode := workersMap[outputUUIDS[0]] // just use the first output for now
+			v.SetOutput(attachedNode.GetInput())
+		}
+		i++
+	}
 }
