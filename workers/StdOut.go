@@ -22,6 +22,10 @@ func (n *StdOutNode) SetConfig(config map[string]string) {
 	n.Config = config
 }
 
+func (n *StdOutNode) ToString() string {
+	return fmt.Sprintf("{UUID: %v, NodeType: %v, Config: %v, InputChannel: %v, OutputChannel: %v}", n.GetUUID(), n.GetNodeType(), n.GetConfig(), n.GetInput(), n.GetOutput())
+}
+
 func (n *StdOutNode) Setup() {
 
 }

@@ -18,12 +18,8 @@ func (n *DFINode) GetNodeType() string {
 	return "DFI"
 }
 
-func (n *DFINode) SetUUID(uuid string) {
-	n.UUID = uuid
-}
-
-func (n *DFINode) SetConfig(config map[string]string) {
-	n.Config = config
+func (n *DFINode) ToString() string {
+	return fmt.Sprintf("{UUID: %v, NodeType: %v, Config: %v, InputChannel: %v, OutputChannel: %v}", n.GetUUID(), n.GetNodeType(), n.GetConfig(), n.GetInput(), n.GetOutput())
 }
 
 func (n *DFINode) Setup() {

@@ -57,11 +57,11 @@ func (n *BaseNode) Process() {
 }
 
 func (n *BaseNode) SetUUID(uuid string) {
-	panic("not implemented")
+	n.UUID = uuid
 }
 
 func (n *BaseNode) SetConfig(config map[string]string) {
-	panic("not implemented")
+	n.Config = config
 }
 
 func (n *BaseNode) SetInput(input chan Document) {

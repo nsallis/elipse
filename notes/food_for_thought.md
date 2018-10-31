@@ -21,8 +21,8 @@
 ## Pipeline
 
 * hook up nodes (no load-balancers yet) ✓
-* create `toString` method for anything implementing the BaseNode
-* move WorkerConfig to spawner (it is only used there)
+* create `toString` method for anything implementing the BaseNode ✓
+* move WorkerConfig to spawner (it is only used there) ✓
 * remove createDocFromNode (DFI), and use a more permanent solution for input
 * add error logging
 * create splitter node

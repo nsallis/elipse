@@ -6,8 +6,19 @@ import (
 	"github.com/nsallis/elipse/workers"
 )
 
+// WorkerConfig configuration for all workers.
+// Used in building nodes from json
+// TODO should probably be moved to spawner
+type WorkerConfig struct {
+	UUID     string
+	NodeType string
+	Config   map[string]string
+	Outputs  []string
+	Errors   []string
+}
+
 // CreateWorkerConfigFromFile creates a WorkerConfig from a file path
-func CreateWorkerConfigFromFile(path string) []workers.WorkerConfig {
+func CreateWorkerConfigFromFile(path string) []WorkerConfig {
 	jsonString, err := util.ReadDiskFile(path)
 	if err != nil {
 		panic(err)
@@ -16,8 +27,8 @@ func CreateWorkerConfigFromFile(path string) []workers.WorkerConfig {
 }
 
 // CreateWorkerConfig create worker config from json string
-func CreateWorkerConfig(jsonString string) []workers.WorkerConfig { // needs to convert workers json into struct and return
-	var config []workers.WorkerConfig
+func CreateWorkerConfig(jsonString string) []WorkerConfig { // needs to convert workers json into struct and return
+	var config []WorkerConfig
 	if err := json.Unmarshal([]byte(jsonString), &config); err != nil {
 		panic(err)
 	}
@@ -40,7 +51,7 @@ func getNodeFromTypeString(typeName string) workers.Node {
 	return node
 }
 
-func spawnWorker(config workers.WorkerConfig) (workers.Node, error) {
+func spawnWorker(config WorkerConfig) (workers.Node, error) {
 	node := getNodeFromTypeString(config.NodeType)
 	node.SetUUID(string(config.UUID))
 	node.SetConfig(config.Config)
@@ -48,7 +59,7 @@ func spawnWorker(config workers.WorkerConfig) (workers.Node, error) {
 }
 
 // SpawnWorkers spawns workers from the config
-func SpawnWorkers(configs []workers.WorkerConfig) (map[string]workers.Node, []error) {
+func SpawnWorkers(configs []WorkerConfig) (map[string]workers.Node, []error) {
 	workersMap := make(map[string]workers.Node)
 	for _, config := range configs {
 		worker, _ := spawnWorker(config) // TODO log error
@@ -57,7 +68,7 @@ func SpawnWorkers(configs []workers.WorkerConfig) (map[string]workers.Node, []er
 	return workersMap, nil
 }
 
-func ConnectWorkers(workersMap map[string]workers.Node, configs []workers.WorkerConfig) {
+func ConnectWorkers(workersMap map[string]workers.Node, configs []WorkerConfig) {
 	for _, v := range workersMap {
 		inChannel := make(chan workers.Document, 100) // TODO make the channel buffer length configurable
 		outChannel := make(chan workers.Document, 100)
