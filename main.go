@@ -13,9 +13,11 @@ import (
 func main() {
 
 	config := spawner.CreateWorkerConfigFromFile("./test_data/worker_example.json")
-	fmt.Println(config[0].Config["filename"])
 	workersMap, _ := spawner.SpawnWorkers(config)
 	spawner.ConnectWorkers(workersMap, config)
+	for _, v := range workersMap {
+		fmt.Println(v.ToString())
+	}
 
 	//***************************
 	// inputChannel := make(chan workers.Document, 100)

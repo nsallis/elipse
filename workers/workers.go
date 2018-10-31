@@ -48,66 +48,66 @@ type BaseNode struct {
 	Config         map[string]string
 }
 
-func (n BaseNode) Setup() {
+func (n *BaseNode) Setup() {
 	panic("not implemented")
 }
 
-func (n BaseNode) Process() {
+func (n *BaseNode) Process() {
 	panic("not implemented")
 }
 
-func (n BaseNode) SetUUID(uuid string) {
+func (n *BaseNode) SetUUID(uuid string) {
 	panic("not implemented")
 }
 
-func (n BaseNode) SetConfig(config map[string]string) {
+func (n *BaseNode) SetConfig(config map[string]string) {
 	panic("not implemented")
 }
 
-func (n BaseNode) SetInput(input chan Document) {
+func (n *BaseNode) SetInput(input chan Document) {
 	n.InputChannel = input
 }
 
-func (n BaseNode) SetOutput(input chan Document) {
+func (n *BaseNode) SetOutput(input chan Document) {
 	n.OutputChannel = input
 }
 
-func (n BaseNode) SetError(err chan error) {
+func (n *BaseNode) SetError(err chan error) {
 	n.ErrorChannel = err
 }
 
-func (n BaseNode) SetControl(control chan string) {
+func (n *BaseNode) SetControl(control chan string) {
 	n.ControlChannel = control
 }
 
-func (n BaseNode) GetUUID() string {
+func (n *BaseNode) GetUUID() string {
 	return n.UUID
 }
 
-func (n BaseNode) GetConfig() map[string]string {
+func (n *BaseNode) GetConfig() map[string]string {
 	return n.Config
 }
 
-func (n BaseNode) GetInput() chan Document {
+func (n *BaseNode) GetInput() chan Document {
 	return n.InputChannel
 }
 
-func (n BaseNode) GetOutput() chan Document {
+func (n *BaseNode) GetOutput() chan Document {
 	return n.OutputChannel
 }
 
-func (n BaseNode) GetError() chan error {
+func (n *BaseNode) GetError() chan error {
 	return n.ErrorChannel
 }
 
-func (n BaseNode) GetControl() chan string {
+func (n *BaseNode) GetControl() chan string {
 	return n.ControlChannel
 }
 
-func (n BaseNode) GetNodeType() string {
+func (n *BaseNode) GetNodeType() string {
 	return "BaseNode"
 }
 
-func (n BaseNode) ToString() string {
-	return fmt.Sprintf("")
+func (n *BaseNode) ToString() string {
+	return fmt.Sprintf("{UUID: %v, NodeType: %v, Config: %v, InputChannel: %v, OutputChannel: %v}", n.GetUUID(), n.GetNodeType(), n.GetConfig(), n.GetInput(), n.GetOutput())
 }
