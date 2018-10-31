@@ -13,7 +13,7 @@
   },
   {
     "UUID": "2",
-    "type": "StdOut",
+    "nodeType": "StdOut",
     "config": {
 
     },
