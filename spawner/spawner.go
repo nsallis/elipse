@@ -31,28 +31,29 @@ func getNodeFromTypeString(typeName string) workers.Node {
 	var node workers.Node
 	switch typeName {
 	case "DFI":
-		node = workers.DFINode{}
+		node = &workers.DFINode{}
 	case "StdOut":
-		node = workers.StdOutNode{}
+		node = &workers.StdOutNode{}
 	default:
-		node = workers.BaseNode{} // TODO this will eventually throw a not implemented
+		node = &workers.BaseNode{} // TODO this will eventually throw a not implemented
 		// error because SetUUID is not implemented
 	}
 	return node
 }
 
-func spawnWorker(config workers.WorkerConfig) error {
+func spawnWorker(config workers.WorkerConfig) (workers.Node, error) {
 	node := getNodeFromTypeString(config.NodeType)
-	fmt.Println("node: " + node.GetNodeType())
-	node.SetUUID(config.UUID)
+	node.SetUUID(string(config.UUID))
 	node.SetConfig(config.Config)
-	return nil
+	return node, nil
 }
 
 // SpawnWorkers spawns workers from the config
-func SpawnWorkers(configs []workers.WorkerConfig) []error {
+func SpawnWorkers(configs []workers.WorkerConfig) (map[string]workers.Node, []error) {
+	workersMap := make(map[string]workers.Node)
 	for _, config := range configs {
-		spawnWorker(config)
+		worker, _ := spawnWorker(config) // TODO log error
+		workersMap[worker.GetUUID()] = worker
 	}
-	return nil
+	return workersMap, nil
 }

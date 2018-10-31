@@ -23,6 +23,8 @@ type Node interface {
 	SetOutput(chan Document)
 	SetError(chan error)
 	SetControl(chan string)
+	GetUUID() string
+	GetConfig() map[string]string
 	GetInput() chan Document
 	GetOutput() chan Document
 	GetError() chan error
@@ -73,6 +75,14 @@ func (n BaseNode) SetError(err chan error) {
 
 func (n BaseNode) SetControl(control chan string) {
 	n.ControlChannel = control
+}
+
+func (n BaseNode) GetUUID() string {
+	return n.UUID
+}
+
+func (n BaseNode) GetConfig() map[string]string {
+	return n.Config
 }
 
 func (n BaseNode) GetInput() chan Document {

@@ -10,23 +10,23 @@ type StdOutNode struct {
 	BaseNode
 }
 
-func (n StdOutNode) GetNodeType() string {
+func (n *StdOutNode) GetNodeType() string {
 	return "StdOut"
 }
 
-func (n StdOutNode) SetUUID(uuid string) {
+func (n *StdOutNode) SetUUID(uuid string) {
 	n.UUID = uuid
 }
 
-func (n StdOutNode) SetConfig(config map[string]string) {
+func (n *StdOutNode) SetConfig(config map[string]string) {
 	n.Config = config
 }
 
-func (n StdOutNode) Setup() {
+func (n *StdOutNode) Setup() {
 
 }
 
-func (n StdOutNode) Process() {
+func (n *StdOutNode) Process() {
 	for {
 		select {
 		case inputDoc := <-n.InputChannel:
