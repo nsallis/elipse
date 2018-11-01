@@ -16,7 +16,8 @@ func main() {
 	workersMap, _ := spawner.SpawnWorkers(config)
 	spawner.ConnectWorkers(workersMap, config)
 	for _, v := range workersMap {
-		fmt.Println(v.ToString())
+		fmt.Println("starting node: " + v.ToString())
+		go v.Process()
 	}
 
 	//***************************
@@ -45,24 +46,24 @@ func main() {
 	// 	Config:         workers.Configuration{},
 	// }
 
-	// var command string
+	var command string
 
 	// dfiNode.Setup()
 	// outNode.Setup()
 	// go dfiNode.Process()
 	// go outNode.Process()
-	// fmt.Println("Started processing...")
-	// fmt.Println("")
+	fmt.Println("Started processing...")
+	fmt.Println("")
 
-	// for { // main running loop
-	// 	fmt.Scanln(&command)
-	// 	if command != "" {
-	// 		dfiNode.ControlChannel <- command
-	// 		outNode.ControlChannel <- command
-	// 		if command == "exit" {
-	// 			fmt.Println("Waiting for nodes to exit...")
-	// 			break
-	// 		}
-	// 	}
-	// }
+	for { // main running loop
+		fmt.Scanln(&command)
+		if command != "" {
+			// dfiNode.ControlChannel <- command
+			// outNode.ControlChannel <- command
+			if command == "exit" {
+				fmt.Println("Waiting for nodes to exit...")
+				break
+			}
+		}
+	}
 }

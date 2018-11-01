@@ -2,17 +2,6 @@ package workers
 
 import "fmt"
 
-// WorkerConfig configuration for all workers.
-// Used in building nodes from json
-// TODO should probably be moved to spawner
-type WorkerConfig struct {
-	UUID     string
-	NodeType string
-	Config   map[string]string
-	Outputs  []string
-	Errors   []string
-}
-
 // Node defines interface with methods all nodes should have
 // use `var _ Node = DFINode{}` to check that your node implements
 // Node
