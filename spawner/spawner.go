@@ -44,6 +44,8 @@ func getNodeFromTypeString(typeName string) workers.Node {
 		node = &workers.DFINode{}
 	case "StdOut":
 		node = &workers.StdOutNode{}
+	case "DFO":
+		node = &workers.DFONode{}
 	default:
 		node = &workers.BaseNode{} // TODO this will eventually throw a not implemented
 		// error because SetUUID is not implemented

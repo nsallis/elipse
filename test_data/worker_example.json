@@ -1,11 +1,9 @@
-[
-  {
+[{
     "UUID": "1",
     "nodeType": "DFI",
-    "config": 
-      {
-        "filename": "./test_data/dfi_test.txt"
-      },
+    "config": {
+      "filename": "./test_data/dfi_test.txt"
+    },
     "outputs": [
       "2"
     ],
@@ -13,9 +11,10 @@
   },
   {
     "UUID": "2",
-    "nodeType": "StdOut",
+    "nodeType": "DFO",
     "config": {
-
+      "filepath": "./test_data/dfo_test/",
+      "formatString": "dfoTest-$SOURCE_NAME"
     },
     "outputs": [],
     "errors": []

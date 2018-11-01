@@ -63,19 +63,21 @@ func (n *DFONode) Process() {
 			}
 		case document := <-n.InputChannel:
 			filename := n.parseFileName(document.Source) // TODO will need to check if this is a sourceType other than disk
-			fileInfo, err := os.Stat(filename)
-			if err != nil {
-				log.Error("Cannot find file for node "+n.UUID, err)
-			}
+
+			// fileInfo, err := os.Stat(filename)
+			// if err != nil {
+			// 	log.Error("Cannot find file for node "+n.UUID, err)
+			// }
 
 			var file *os.File
+			var err error
 			if appendFlag {
-				file, err = os.OpenFile(filename, os.O_APPEND, fileInfo.Mode())
+				file, err = os.OpenFile(filename, os.O_APPEND, 0644) // TODO use original file permiossion of config
 				if err != nil {
 					log.Error("Cannot open file for node "+n.UUID, err)
 				}
 			} else {
-				file, err = os.OpenFile(filename, os.O_CREATE, fileInfo.Mode())
+				file, err = os.OpenFile(filename, os.O_CREATE|os.O_WRONLY, 0644)
 				if err != nil {
 					log.Error("Cannot open file for node "+n.UUID, err)
 				}
@@ -90,8 +92,13 @@ func (n *DFONode) Process() {
 }
 
 func (n *DFONode) parseFileName(sourceName string) string { // TODO add more injectable values to this
-	if formatString, ok := n.Config["formatString"]; ok {
-		return path.Join(n.Config["filepath"], n.getFileNameFromPath(sourceName))
+	if formatString, exists := n.Config["formatString"]; !exists {
+		filename := path.Join(n.Config["filepath"], n.getFileNameFromPath(sourceName))
+		absFileName, err := filepath.Abs(filename)
+		if err != nil {
+			log.Error("Could not get absolute file path in node "+n.UUID, err)
+		}
+		return absFileName
 	} else {
 		formattedFileName := strings.Replace(formatString, "$SOURCE_NAME", n.getFileNameFromPath(sourceName), -1)
 		return path.Join(n.Config["filepath"], formattedFileName)
