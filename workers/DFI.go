@@ -39,7 +39,7 @@ func (n *DFINode) Process() {
 
 	if str, ok := n.Config["filename"]; ok {
 		fileContents, _ := ioutil.ReadFile(str)
-		n.OutputChannel <- createDocFromNode(n, fileContents)
+		n.OutputChannel <- n.createDocument(n, fileContents)
 	}
 
 	watcher, _ := fsnotify.NewWatcher()
@@ -57,7 +57,7 @@ func (n *DFINode) Process() {
 			case event.Op == fsnotify.Write:
 				fmt.Println("wrote to the file")
 				fileContents, _ := ioutil.ReadFile(event.Name)
-				n.OutputChannel <- createDocFromNode(n, fileContents)
+				n.OutputChannel <- n.createDocument(n, fileContents)
 			case event.Op == fsnotify.Create:
 				fmt.Println("created a file in a watched directory")
 			default:
@@ -70,7 +70,7 @@ func (n *DFINode) Process() {
 	}
 }
 
-func createDocFromNode(node *DFINode, fileContents []byte) Document {
+func (n *DFINode) createDocument(node *DFINode, fileContents []byte) Document {
 
 	var filepath string
 	if str, ok := node.Config["filename"]; ok {
