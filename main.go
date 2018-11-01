@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 
+	"errors"
+	"github.com/nsallis/elipse/log"
 	"github.com/nsallis/elipse/spawner"
 	// "github.com/nsallis/elipse/util"
 	// "time"
@@ -19,47 +21,20 @@ func main() {
 		fmt.Println("starting node: " + v.ToString())
 		go v.Process()
 	}
-
-	//***************************
-	// inputChannel := make(chan workers.Document, 100)
-	// outputChannel := make(chan workers.Document, 100)
-	// controlChannel := make(chan string)
-	// errorChannel := make(chan error, 100)
-	// dfiConfig := workers.Configuration{"filename": "./test_data/dfi_test.txt"}
-	// dfiNode := &workers.DFINode{
-	// 	UUID:           "1",
-	// 	InputChannel:   inputChannel,
-	// 	OutputChannel:  outputChannel,
-	// 	ErrorChannel:   errorChannel,
-	// 	ControlChannel: controlChannel,
-	// 	Config:         dfiConfig,
-	// }
-
-	// stdOutChan := make(chan workers.Document, 100)
-	// stcCommandChan := make(chan string)
-	// outNode := &workers.StdOutNode{
-	// 	UUID:           "2",
-	// 	InputChannel:   outputChannel,
-	// 	OutputChannel:  stdOutChan,
-	// 	ControlChannel: stcCommandChan,
-	// 	ErrorChannel:   errorChannel,
-	// 	Config:         workers.Configuration{},
-	// }
+	fmt.Println("loggin an error for testing: ")
+	log.Error("This is a test error", errors.New("this is a test stack trace"))
 
 	var command string
 
-	// dfiNode.Setup()
-	// outNode.Setup()
-	// go dfiNode.Process()
-	// go outNode.Process()
 	fmt.Println("Started processing...")
 	fmt.Println("")
 
 	for { // main running loop
 		fmt.Scanln(&command)
 		if command != "" {
-			// dfiNode.ControlChannel <- command
-			// outNode.ControlChannel <- command
+			for _, v := range workersMap {
+				v.GetControl() <- command
+			}
 			if command == "exit" {
 				fmt.Println("Waiting for nodes to exit...")
 				break
