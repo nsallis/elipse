@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 
-	"errors"
 	"github.com/nsallis/elipse/log"
 	"github.com/nsallis/elipse/spawner"
 	// "github.com/nsallis/elipse/util"
@@ -21,13 +20,10 @@ func main() {
 		fmt.Println("starting node: " + v.ToString())
 		go v.Process()
 	}
-	fmt.Println("loggin an error for testing: ")
-	log.Error("This is a test error", errors.New("this is a test stack trace"))
 
 	var command string
 
-	fmt.Println("Started processing...")
-	fmt.Println("")
+	log.Info("Starting processing...")
 
 	for { // main running loop
 		fmt.Scanln(&command)
@@ -36,9 +32,9 @@ func main() {
 				v.GetControl() <- command
 			}
 			if command == "exit" {
-				fmt.Println("Waiting for nodes to exit...")
 				break
 			}
 		}
 	}
+	log.Info("All nodes have stopped. Shutting down.")
 }

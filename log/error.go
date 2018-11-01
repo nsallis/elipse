@@ -16,7 +16,7 @@ func Error(errorText string, err error) {
 	if err != nil {
 		errorMessage = fmt.Sprintf("%s\n%s\n\n", errorText, err.Error())
 	} else {
-		errorMessage = fmt.Sprintf("%s %s\n\n", red("[ERROR]"), errorText)
+		errorMessage = fmt.Sprintf("%s\n\n", errorText)
 	}
 	log.SetPrefix(red("[ERROR] "))
 	log.Print(errorMessage)

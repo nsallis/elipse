@@ -3,10 +3,10 @@ package workers
 // disk file input
 
 import (
-	"io/ioutil"
-	// // "path/filepath"
 	"fmt"
 	"github.com/fsnotify/fsnotify"
+	"github.com/nsallis/elipse/log"
+	"io/ioutil"
 	"time"
 )
 
@@ -45,11 +45,12 @@ func (n *DFINode) Process() {
 	watcher, _ := fsnotify.NewWatcher()
 	defer watcher.Close()
 	watcher.Add(filepath)
+	log.Info("node " + n.UUID + " is watching file/directory " + filepath)
 	for {
 		select {
 		case command := <-n.ControlChannel:
 			if command == "exit" {
-				fmt.Println("exiting DFI...")
+				log.Info("exiting node " + n.UUID)
 				break
 			}
 		case event := <-watcher.Events:

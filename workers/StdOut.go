@@ -3,6 +3,7 @@ package workers
 
 import (
 	"fmt"
+	"github.com/nsallis/elipse/log"
 	"time"
 )
 
@@ -38,7 +39,7 @@ func (n *StdOutNode) Process() {
 			fmt.Println("Got a document: " + docString)
 		case command := <-n.ControlChannel:
 			if command == "exit" {
-				fmt.Println("exiting stdout...")
+				log.Info("exiting node " + n.UUID)
 				close(n.OutputChannel)
 				break
 			}
