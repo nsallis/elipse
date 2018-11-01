@@ -7,30 +7,42 @@ import (
 	"github.com/fsnotify/fsnotify"
 	"github.com/nsallis/elipse/log"
 	"io/ioutil"
+	"path/filepath"
 	"time"
 )
 
+// DFINode reads files from disk, and passes them on as documents
 type DFINode struct {
 	BaseNode
 }
 
+// GetNodeType get the type of node
 func (n *DFINode) GetNodeType() string {
 	return "DFI"
 }
 
+// ToString get the string version of this node
 func (n *DFINode) ToString() string {
 	return fmt.Sprintf("{UUID: %v, NodeType: %v, Config: %v, InputChannel: %v, OutputChannel: %v}", n.GetUUID(), n.GetNodeType(), n.GetConfig(), n.GetInput(), n.GetOutput())
 }
 
+// Setup make any config updates before processing
 func (n *DFINode) Setup() {
 	// var _ Node = DFINode{}
 	// TODO check if file path is valid
 	// TODO get the absolute path of the file
 	if str, ok := n.Config["filename"]; ok {
-		n.Config["filename"] = str
+		absPath, err := filepath.Abs(str)
+		if err != nil {
+			log.Error("Could not get absolute path. Will try using relative path.", err)
+			absPath = str // try using relative path
+		}
+		n.Config["filename"] = absPath
 	}
 }
 
+// Process run the worker. Reads the specified file in and converts it to a document.
+// Also watches the specified file for any changes and outputs an updated document if there have been changes
 func (n *DFINode) Process() {
 	var filepath string
 	if str, ok := n.Config["filename"]; ok {
