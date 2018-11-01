@@ -25,6 +25,6 @@
 * move WorkerConfig to spawner (it is only used there) ✓
 * remove createDocFromNode (DFI), and use a more permanent solution for input ✓
 * add error logging ✓
-* make all file paths absolute
+* make all file paths absolute ✓
 * create splitter node
 * create basic processor node

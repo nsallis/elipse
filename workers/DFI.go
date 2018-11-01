@@ -1,7 +1,5 @@
 package workers
 
-// disk file input
-
 import (
 	"fmt"
 	"github.com/fsnotify/fsnotify"
@@ -11,7 +9,9 @@ import (
 	"time"
 )
 
-// DFINode reads files from disk, and passes them on as documents
+// DFINode (Disk File In) reads files from disk, and passes them on as documents
+// takes config values:
+//  - Filename - the path to watch/read from.
 type DFINode struct {
 	BaseNode
 }
@@ -32,6 +32,10 @@ func (n *DFINode) Setup() {
 	// TODO check if file path is valid
 	// TODO get the absolute path of the file
 	if str, ok := n.Config["filename"]; ok {
+		if !ok {
+			log.Error("Required config `filename` not present for node "+n.UUID, nil)
+			panic("Required config `filename` not preset for node")
+		}
 		absPath, err := filepath.Abs(str)
 		if err != nil {
 			log.Error("Could not get absolute path. Will try using relative path.", err)
