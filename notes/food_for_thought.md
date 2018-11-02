@@ -26,5 +26,6 @@
 * remove createDocFromNode (DFI), and use a more permanent solution for input ✓
 * add error logging ✓
 * make all file paths absolute ✓
-* create splitter node
+* create splitter node ✓
 * create basic processor node
+* add line tracking to splitter (like x out of y)

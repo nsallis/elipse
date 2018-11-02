@@ -15,7 +15,6 @@ import (
 //  - append (optional) - if the file should be over-written/created, or appended to
 //  - formatString (optional) - sets formatting for output file name where $SOURCE_NAME
 // interpolates to the original file name
-
 type DFONode struct {
 	BaseNode
 }
