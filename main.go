@@ -18,6 +18,7 @@ func main() {
 	spawner.ConnectWorkers(workersMap, config)
 	for _, v := range workersMap {
 		fmt.Println("starting node: " + v.ToString())
+		v.Setup()
 		go v.Process()
 	}
 

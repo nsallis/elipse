@@ -14,7 +14,8 @@
     "nodeType": "DFO",
     "config": {
       "filepath": "./test_data/dfo_test/",
-      "formatString": "dfoTest-$SOURCE_NAME"
+      "formatString": "dfoTest-$SOURCE_NAME",
+      "append": "true"
     },
     "outputs": [],
     "errors": []

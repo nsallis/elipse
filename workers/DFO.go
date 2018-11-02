@@ -32,16 +32,17 @@ func (n *DFONode) ToString() string {
 
 // Setup make any config updates before processing
 func (n *DFONode) Setup() {
-	if str, ok := n.Config["filepath"]; ok {
-		if !ok {
-			log.Error("Required config `filepath` not present for node "+n.UUID, nil)
-			panic("Required config `filepath` not preset for node")
-		}
-		absPath, err := filepath.Abs(str)
-		if err != nil {
-			log.Error("Could not get absolute path. Will try using relative path.", err)
-			absPath = str // try using relative path
-		}
+	log.Info("running setup")
+	var filePath string
+	var exists bool
+	if filePath, exists = n.Config["filepath"]; !exists {
+		log.Error("Required config `filepath` not present for node "+n.UUID, nil)
+		panic("Required config `filepath` not preset for node")
+	}
+	absPath, err := filepath.Abs(filePath)
+	if err != nil {
+		log.Error("Could not get absolute path. Will try using relative path.", err)
+		absPath = filePath // try using relative path
 		n.Config["filepath"] = absPath
 	}
 }
@@ -64,25 +65,19 @@ func (n *DFONode) Process() {
 		case document := <-n.InputChannel:
 			filename := n.parseFileName(document.Source) // TODO will need to check if this is a sourceType other than disk
 
-			// fileInfo, err := os.Stat(filename)
-			// if err != nil {
-			// 	log.Error("Cannot find file for node "+n.UUID, err)
-			// }
-
 			var file *os.File
 			var err error
+			var fileOpenMode int
 			if appendFlag {
-				file, err = os.OpenFile(filename, os.O_APPEND, 0644) // TODO use original file permiossion of config
-				if err != nil {
-					log.Error("Cannot open file for node "+n.UUID, err)
-				}
+				fileOpenMode = os.O_CREATE | os.O_WRONLY | os.O_APPEND
 			} else {
-				file, err = os.OpenFile(filename, os.O_CREATE|os.O_WRONLY, 0644)
-				if err != nil {
-					log.Error("Cannot open file for node "+n.UUID, err)
-				}
+				fileOpenMode = os.O_CREATE | os.O_RDWR | os.O_TRUNC
 			}
-			_, err = file.Write(document.Value)
+			file, err = os.OpenFile(filename, fileOpenMode, document.SourcePermissions)
+			if err != nil {
+				log.Error("Cannot open file for node "+n.UUID, err)
+			}
+			_, err = file.WriteString(string(document.Value))
 			file.Close()
 			if err != nil {
 				log.Error("Could not write to file for node "+n.UUID, err)
@@ -92,17 +87,17 @@ func (n *DFONode) Process() {
 }
 
 func (n *DFONode) parseFileName(sourceName string) string { // TODO add more injectable values to this
+	var fileName string
 	if formatString, exists := n.Config["formatString"]; !exists {
-		filename := path.Join(n.Config["filepath"], n.getFileNameFromPath(sourceName))
-		absFileName, err := filepath.Abs(filename)
-		if err != nil {
-			log.Error("Could not get absolute file path in node "+n.UUID, err)
-		}
-		return absFileName
+		fileName = n.getFileNameFromPath(sourceName)
 	} else {
-		formattedFileName := strings.Replace(formatString, "$SOURCE_NAME", n.getFileNameFromPath(sourceName), -1)
-		return path.Join(n.Config["filepath"], formattedFileName)
+		fileName = strings.Replace(formatString, "$SOURCE_NAME", n.getFileNameFromPath(sourceName), -1)
 	}
+	absoluteFileName, err := filepath.Abs(path.Join(n.Config["filepath"], fileName))
+	if err != nil {
+		log.Error("Could not get absolute path for node "+n.UUID, err)
+	}
+	return absoluteFileName
 }
 
 // getFileNameFromPath gets the file name from file path (everything after last /)

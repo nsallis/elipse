@@ -5,6 +5,7 @@ import (
 	"github.com/fsnotify/fsnotify"
 	"github.com/nsallis/elipse/log"
 	"io/ioutil"
+	"os"
 	"path/filepath"
 	"time"
 )
@@ -55,7 +56,12 @@ func (n *DFINode) Process() {
 
 	if str, ok := n.Config["filename"]; ok {
 		fileContents, _ := ioutil.ReadFile(str)
-		n.OutputChannel <- n.createDocument(n, fileContents)
+		stat, err := os.Stat(str)
+		if err != nil {
+			log.Error("Could not stat file for node "+n.UUID, err)
+		}
+
+		n.OutputChannel <- n.createDocument(n, fileContents, stat)
 	}
 
 	watcher, _ := fsnotify.NewWatcher()
@@ -74,7 +80,11 @@ func (n *DFINode) Process() {
 			case event.Op == fsnotify.Write:
 				fmt.Println("wrote to the file")
 				fileContents, _ := ioutil.ReadFile(event.Name)
-				n.OutputChannel <- n.createDocument(n, fileContents)
+				stat, err := os.Stat(event.Name)
+				if err != nil {
+					log.Error("Could not stat file for node "+n.UUID, err)
+				}
+				n.OutputChannel <- n.createDocument(n, fileContents, stat)
 			case event.Op == fsnotify.Create:
 				fmt.Println("created a file in a watched directory")
 			default:
@@ -87,11 +97,11 @@ func (n *DFINode) Process() {
 	}
 }
 
-func (n *DFINode) createDocument(node *DFINode, fileContents []byte) Document {
+func (n *DFINode) createDocument(node *DFINode, fileContents []byte, stat os.FileInfo) Document {
 
 	var filepath string
 	if str, ok := node.Config["filename"]; ok {
 		filepath = str
 	}
-	return Document{Value: fileContents, Source: filepath, SourceType: "disk"}
+	return Document{Value: fileContents, Source: filepath, SourceType: "disk", SourcePermissions: stat.Mode()}
 }
