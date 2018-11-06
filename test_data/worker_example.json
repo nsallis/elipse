@@ -27,8 +27,19 @@
     "outputs": [
       "4"
     ]
-  }, {
+  },
+  {
     "UUID": "4",
+    "nodeType": "Joiner",
+    "config": {
+      "delimiter": "\n"
+    },
+    "outputs": [
+      "5"
+    ]
+  },
+  {
+    "UUID": "5",
     "nodeType": "DFO",
     "config": {
       "filepath": "./test_data/dfo_test/",

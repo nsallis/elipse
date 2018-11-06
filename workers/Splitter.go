@@ -45,13 +45,17 @@ func (n *SplitterNode) Process() {
 			}
 		case document := <-n.InputChannel:
 			splitValues := bytes.Split(document.Value, []byte(n.Config["delimiter"]))
-			for _, value := range splitValues {
-				n.OutputChannel <- n.createDocFromString(value, document)
+			for index, value := range splitValues {
+				n.OutputChannel <- n.createDocFromString(value, document, index, len(splitValues))
 			}
 		}
 	}
 }
 
-func (n *SplitterNode) createDocFromString(value []byte, doc Document) Document {
-	return Document{Value: value, Errors: doc.Errors, Source: doc.Source, SourceType: doc.SourceType, SourcePermissions: doc.SourcePermissions}
+func (n *SplitterNode) createDocFromString(value []byte, doc Document, splitNumber int, totalSplits int) Document {
+	newDoc := doc
+	newDoc.Value = value
+	newDoc.TotalFragments = totalSplits
+	newDoc.FragmentNumber = splitNumber
+	return newDoc
 }
