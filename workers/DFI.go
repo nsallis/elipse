@@ -60,7 +60,6 @@ func (n *DFINode) Process() {
 		if err != nil {
 			log.Error("Could not stat file for node "+n.UUID, err)
 		}
-
 		n.OutputChannel <- n.createDocument(n, fileContents, stat)
 	}
 
@@ -97,6 +96,8 @@ func (n *DFINode) Process() {
 	}
 }
 
+// TODO we should be copying the existing document and just updating fields that make sense.
+// This is more scalable
 func (n *DFINode) createDocument(node *DFINode, fileContents []byte, stat os.FileInfo) Document {
 
 	var filepath string

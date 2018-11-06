@@ -46,6 +46,8 @@ func getNodeFromTypeString(typeName string) workers.Node {
 		node = &workers.StdOutNode{}
 	case "DFO":
 		node = &workers.DFONode{}
+	case "Splitter":
+		node = &workers.SplitterNode{}
 	case "GoProcessor":
 		node = &workers.GoProcessorNode{}
 	default:
