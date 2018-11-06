@@ -12,6 +12,8 @@ type Document struct {
 	Source            string      // url or file path
 	SourceType        string      // TODO enumerate to: disk, sftp, generated, mixed...
 	SourcePermissions os.FileMode // original permissions on file
+	TotalFragments    int         // Total number of fragments (splits) to the original file
+	FragmentNumber    int         // which fragment (line/entity) this document represents
 }
 
 func (doc Document) ToString() (string, error) {

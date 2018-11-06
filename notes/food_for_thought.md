@@ -27,5 +27,7 @@
 * add error logging ✓
 * make all file paths absolute ✓
 * create splitter node ✓
-* create basic processor node
+* create basic processor node ✓
 * add line tracking to splitter (like x out of y)
+* close channels correctly
+* close files correctly
