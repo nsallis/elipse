@@ -3,6 +3,7 @@ package workers
 import (
 	"fmt"
 	"github.com/nsallis/elipse/log"
+	"gopkg.in/cheggaaa/pb.v1"
 	"strings"
 )
 
@@ -34,6 +35,8 @@ func (n *JoinerNode) Setup() {
 }
 
 func (n *JoinerNode) Process() {
+	count := 2000000
+	bar := pb.StartNew(count)
 	for {
 		select {
 		case command := <-n.ControlChannel:
@@ -50,13 +53,10 @@ func (n *JoinerNode) Process() {
 			// log.Debug("total fragments: " + string(document.TotalFragments))
 			var currentLength int
 			currentLength = len(n.InProgresDocuments[document.Source])
-			if currentLength%1000 == 0 {
-				log.Debug(fmt.Sprintf("At fragment: %d", currentLength))
-			}
+			bar.Increment()
+
 			if currentLength >= document.TotalFragments {
-				log.Debug("Got all fragments. Joining them now")
 				newVal := strings.Join(n.InProgresDocuments[document.Source][:], n.Config["delimiter"])
-				log.Debug("writing to output channel")
 				n.OutputChannel <- n.createDocFromValue(newVal, document)
 				delete(n.InProgresDocuments, document.Source)
 			}
