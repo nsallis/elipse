@@ -36,6 +36,7 @@ func (n *SplitterNode) Setup() {
 // Process run the worker. Splits the value of a document based on a delimiter
 // Writes these values into new documents, and outputs them
 func (n *SplitterNode) Process() {
+	defer close(n.OutputChannel)
 	for {
 		select {
 		case command := <-n.ControlChannel:
@@ -44,6 +45,7 @@ func (n *SplitterNode) Process() {
 				break
 			}
 		case document := <-n.InputChannel:
+			log.Debug("splitter got doc")
 			splitValues := bytes.Split(document.Value, []byte(n.Config["delimiter"]))
 			for index, value := range splitValues {
 				n.OutputChannel <- n.createDocFromString(value, document, index, len(splitValues))

@@ -42,7 +42,7 @@ func (n *GoProcessorNode) Setup() { // TODO eventually just inject the code insi
 
 // Process run the worker. Uses the plugin we compiled in Setup, and runs it against incoming documents
 func (n *GoProcessorNode) Process() {
-	// TODO need a way to tell if the processor has finished with a split doc
+	defer close(n.OutputChannel)
 	for {
 		select {
 		case command := <-n.ControlChannel:
@@ -51,6 +51,7 @@ func (n *GoProcessorNode) Process() {
 				break
 			}
 		case document := <-n.InputChannel:
+			log.Debug("processor got doc")
 			output, err := n.Processor.Process(string(document.Value))
 			if err != nil {
 				log.Error("Could not process a document for node "+n.UUID, err)

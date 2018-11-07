@@ -2,7 +2,7 @@
     "UUID": "1",
     "nodeType": "DFI",
     "config": {
-      "filename": "./test_data/long_test.csv"
+      "filename": "./test_data/short_test.csv"
     },
     "outputs": [
       "2"
