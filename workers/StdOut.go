@@ -29,6 +29,7 @@ func (n *StdOutNode) Setup() {
 
 // Process runs the worker. Outputs any incoming documents to stdout
 func (n *StdOutNode) Process() {
+	defer close(n.OutputChannel)
 	for {
 		select {
 		case inputDoc := <-n.InputChannel:

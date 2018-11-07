@@ -2,8 +2,11 @@ package spawner
 
 import (
 	"encoding/json"
+	"fmt"
+	"github.com/nsallis/elipse/log"
 	"github.com/nsallis/elipse/util"
 	"github.com/nsallis/elipse/workers"
+	"time"
 )
 
 // WorkerConfig configuration for all workers.
@@ -89,12 +92,28 @@ func ConnectWorkers(workersMap map[string]workers.Node, configs []WorkerConfig) 
 	}
 
 	var i int
+	// TODO instead, loop through config, and pull the workers by UUID
+	for i := 0; i < len(configs); i++ {
+		currentConfig := configs[i]
+		currentWorker := workersMap[currentConfig.UUID]
+	}
 	for _, v := range workersMap {
 		outputUUIDS := configs[i].Outputs
+		fmt.Println("currentWorker: %v", v)
+		if len(outputUUIDS) > 0 {
+			fmt.Println("corresponding worker: %v", workersMap[outputUUIDS[0]])
+		}
+		log.Debug("")
+		// log.Debug(fmt.Sprintf("i: %v", i))
+		// log.Debug(fmt.Sprintf("current node: %v", v))
+		// time.Sleep(3 * time.Second)
+		// log.Debug(fmt.Sprintf("hooking up worker: %i, with worker %i", i, outputUUIDS[0]))
+		// log.Debug(fmt.Sprintf("pointing %v to %v", v, workersMap[outputUUIDS[0]]))
 		if len(outputUUIDS) > 0 {
 			attachedNode := workersMap[outputUUIDS[0]] // just use the first output for now
 			v.SetOutput(attachedNode.GetInput())
 		}
 		i++
 	}
+	time.Sleep(3 * time.Second)
 }

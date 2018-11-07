@@ -49,6 +49,7 @@ func (n *DFINode) Setup() {
 // Process run the worker. Reads the specified file in and converts it to a document.
 // Also watches the specified file for any changes and outputs an updated document if there have been changes
 func (n *DFINode) Process() {
+	defer close(n.OutputChannel)
 	var filepath string
 	if str, ok := n.Config["filename"]; ok {
 		filepath = str
@@ -60,6 +61,7 @@ func (n *DFINode) Process() {
 		if err != nil {
 			log.Error("Could not stat file for node "+n.UUID, err)
 		}
+		log.Debug("DFI sent doc")
 		n.OutputChannel <- n.createDocument(n, fileContents, stat)
 	}
 
@@ -75,9 +77,9 @@ func (n *DFINode) Process() {
 				break
 			}
 		case event := <-watcher.Events:
+			log.Debug("Found change in watched file")
 			switch {
 			case event.Op == fsnotify.Write:
-				fmt.Println("wrote to the file")
 				fileContents, _ := ioutil.ReadFile(event.Name)
 				stat, err := os.Stat(event.Name)
 				if err != nil {
@@ -85,7 +87,7 @@ func (n *DFINode) Process() {
 				}
 				n.OutputChannel <- n.createDocument(n, fileContents, stat)
 			case event.Op == fsnotify.Create:
-				fmt.Println("created a file in a watched directory")
+				log.Debug("created a file in watched directory")
 			default:
 
 			}
