@@ -2,7 +2,7 @@
     "UUID": "1",
     "nodeType": "DFI",
     "config": {
-      "filename": "./test_data/short_test.csv"
+      "filename": "./test_data/long_test.csv"
     },
     "outputs": [
       "2"
@@ -22,7 +22,7 @@
     "UUID": "3",
     "nodeType": "GoProcessor",
     "config": {
-      "userCode": "package main\nimport(\n\"strings\"\n)\ntype CustomProcessor string\nfunc(cp CustomProcessor) Process(line string) (string, error) {\ncols := strings.Split(line, \",\")\nif len(cols) <= 5 {\nreturn \"\",nil\n}\nreturn cols[0] + \",\" + cols[2] + \",\" + cols[3] + \",\" + strings.Replace(cols[5], \".\", \"-\", -1)+\"\\n\",nil\n}\nvar Plugin CustomProcessor"
+      "userCode": "package main\nimport(\n\"strings\"\n)\ntype CustomProcessor string\nfunc(cp CustomProcessor) Process(line string) (string, error) {\ncols := strings.Split(line, \",\")\nif len(cols) <= 5 {\nreturn \"\",nil\n}\nreturn cols[0] + \",\" + cols[2] + \",\" + cols[3] + \",\" + strings.Replace(cols[5], \".\", \"-\", -1),nil\n}\nvar Plugin CustomProcessor"
     },
     "outputs": [
       "4"
