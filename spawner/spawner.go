@@ -2,8 +2,6 @@ package spawner
 
 import (
 	"encoding/json"
-	"fmt"
-	"github.com/nsallis/elipse/log"
 	"github.com/nsallis/elipse/util"
 	"github.com/nsallis/elipse/workers"
 	"time"

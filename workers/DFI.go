@@ -61,7 +61,6 @@ func (n *DFINode) Process() {
 		if err != nil {
 			log.Error("Could not stat file for node "+n.UUID, err)
 		}
-		log.Debug("DFI sent doc")
 		n.OutputChannel <- n.createDocument(n, fileContents, stat)
 	}
 
