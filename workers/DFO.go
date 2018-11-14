@@ -62,6 +62,7 @@ func (n *DFONode) Process() {
 				break
 			}
 		case document := <-n.InputChannel:
+			log.Debug("DFO got doc")
 			filename := n.parseFileName(document.Source) // TODO will need to check if this is a sourceType other than disk
 
 			var file *os.File
