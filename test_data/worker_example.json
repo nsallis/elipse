@@ -42,7 +42,7 @@
     "UUID": "5",
     "nodeType": "DFO",
     "config": {
-      "filepath": "./test_data/dfo_test/",
+      "filepath": "./test_data/test_runs/",
       "formatString": "full_test-$SOURCE_NAME",
       "append": "true"
     },

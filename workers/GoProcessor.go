@@ -51,7 +51,6 @@ func (n *GoProcessorNode) Process() {
 				break
 			}
 		case document := <-n.InputChannel:
-			log.Debug("processor got doc")
 			output, err := n.Processor.Process(string(document.Value))
 			if err != nil {
 				log.Error("Could not process a document for node "+n.UUID, err)
