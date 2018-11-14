@@ -1,4 +1,4 @@
 vendor/*
 main
 .tmp
-test_runs/*
+test_data/test_runs/*
