@@ -2,8 +2,11 @@ package spawner
 
 import (
 	"encoding/json"
+	"fmt"
+	"github.com/nsallis/elipse/log"
 	"github.com/nsallis/elipse/util"
 	"github.com/nsallis/elipse/workers"
+	"time"
 )
 
 // WorkerConfig configuration for all workers.
@@ -97,4 +100,5 @@ func ConnectWorkers(workersMap map[string]workers.Node, configs []WorkerConfig) 
 			currentWorker.SetOutput(attachedWorker.GetInput())
 		}
 	}
+	time.Sleep(3 * time.Second)
 }
