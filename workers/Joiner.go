@@ -43,7 +43,6 @@ func (n *JoinerNode) Process() {
 				break
 			}
 		case document := <-n.InputChannel:
-			log.Debug("joiner got doc")
 			if _, exists := n.InProgresDocuments[document.Source]; !exists {
 				n.InProgresDocuments[document.Source] = []string{string(document.Value)}
 			} else {
@@ -53,7 +52,6 @@ func (n *JoinerNode) Process() {
 			currentLength = len(n.InProgresDocuments[document.Source])
 			if currentLength >= document.TotalFragments {
 				newVal := strings.Join(n.InProgresDocuments[document.Source][:], n.Config["delimiter"])
-				fmt.Println(newVal)
 				n.OutputChannel <- n.createDocFromValue(newVal, document)
 				delete(n.InProgresDocuments, document.Source)
 			}

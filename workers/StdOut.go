@@ -34,7 +34,7 @@ func (n *StdOutNode) Process() {
 		select {
 		case inputDoc := <-n.InputChannel:
 			docString, _ := inputDoc.ToString()
-			fmt.Println("Got a document: " + docString)
+			fmt.Println(docString)
 		case command := <-n.ControlChannel:
 			if command == "exit" {
 				log.Info("exiting node " + n.UUID)

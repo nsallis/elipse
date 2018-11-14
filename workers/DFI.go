@@ -91,7 +91,7 @@ func (n *DFINode) Process() {
 			default:
 
 			}
-			fmt.Println(event)
+			log.Debug(event.String())
 		default:
 			time.Sleep(time.Millisecond * 100) // dictates responsiveness
 		}

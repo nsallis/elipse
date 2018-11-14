@@ -45,7 +45,6 @@ func (n *SplitterNode) Process() {
 				break
 			}
 		case document := <-n.InputChannel:
-			log.Debug("splitter got doc")
 			splitValues := bytes.Split(document.Value, []byte(n.Config["delimiter"]))
 			for index, value := range splitValues {
 				n.OutputChannel <- n.createDocFromString(value, document, index, len(splitValues))

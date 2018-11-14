@@ -6,14 +6,13 @@ import (
 	"log"
 )
 
-// Error logs an error to the log file
+// Debug logs a debug message
 func Debug(debugText string) {
-	// Hardcode error file for now
-	// TODO make error file configurable in the future
-
-	red := color.New(color.FgHiMagenta).SprintFunc()
-	var debugMessage string
-	debugMessage = fmt.Sprintf("%s\n\n", debugText)
-	log.SetPrefix(red("[DEBUG] "))
-	log.Print(debugMessage)
+	if logLevel >= 3 {
+		red := color.New(color.FgHiMagenta).SprintFunc()
+		var debugMessage string
+		debugMessage = fmt.Sprintf("%s\n\n", debugText)
+		log.SetPrefix(red("[DEBUG] "))
+		log.Print(debugMessage)
+	}
 }

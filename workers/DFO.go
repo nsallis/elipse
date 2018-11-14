@@ -31,7 +31,6 @@ func (n *DFONode) ToString() string {
 
 // Setup make any config updates before processing
 func (n *DFONode) Setup() {
-	log.Info("running setup")
 	var filePath string
 	var exists bool
 	if filePath, exists = n.Config["filepath"]; !exists {
@@ -63,7 +62,6 @@ func (n *DFONode) Process() {
 				break
 			}
 		case document := <-n.InputChannel:
-			log.Debug("DFO got doc")
 			filename := n.parseFileName(document.Source) // TODO will need to check if this is a sourceType other than disk
 
 			var file *os.File

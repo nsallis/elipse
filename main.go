@@ -12,19 +12,20 @@ import (
 )
 
 func main() {
-
+	log.InitLogs()
+	log.Info("Reading worker configs")
 	config := spawner.CreateWorkerConfigFromFile("./test_data/worker_example.json")
 	workersMap, _ := spawner.SpawnWorkers(config)
+	log.Info("Spawning workers")
 	spawner.ConnectWorkers(workersMap, config)
 	for _, v := range workersMap {
-		fmt.Println("starting node: " + v.ToString())
+		log.Debug("starting node: " + v.ToString())
 		v.Setup()
 		go v.Process()
 	}
+	log.Info("finished spawning workers")
 
 	var command string
-
-	log.Info("Starting processing...")
 
 	for { // main running loop
 		fmt.Scanln(&command)
