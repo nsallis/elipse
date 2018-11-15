@@ -24,7 +24,7 @@ func (n *DFINode) GetNodeType() string {
 
 // ToString get the string version of this node
 func (n *DFINode) ToString() string {
-	return fmt.Sprintf("{UUID: %v, NodeType: %v, Config: %v, InputChannel: %v, OutputChannel: %v}", n.GetUUID(), n.GetNodeType(), n.GetConfig(), n.GetInput(), n.GetOutput())
+	return fmt.Sprintf("{UUID: %v, NodeType: %v, Config: %v, InputChannel: %v, OutputChannel: %v}", n.GetUUID(), n.GetNodeType(), n.GetConfig(), n.GetInput(), n.GetOutputs())
 }
 
 // Setup make any config updates before processing
@@ -49,7 +49,6 @@ func (n *DFINode) Setup() {
 // Process run the worker. Reads the specified file in and converts it to a document.
 // Also watches the specified file for any changes and outputs an updated document if there have been changes
 func (n *DFINode) Process() {
-	defer close(n.OutputChannel)
 	var filepath string
 	if str, ok := n.Config["filename"]; ok {
 		filepath = str
@@ -61,7 +60,7 @@ func (n *DFINode) Process() {
 		if err != nil {
 			log.Error("Could not stat file for node "+n.UUID, err)
 		}
-		n.OutputChannel <- n.createDocument(n, fileContents, stat)
+		n.OutputChannels[0] <- n.createDocument(n, fileContents, stat)
 	}
 
 	watcher, _ := fsnotify.NewWatcher()
@@ -84,7 +83,7 @@ func (n *DFINode) Process() {
 				if err != nil {
 					log.Error("Could not stat file for node "+n.UUID, err)
 				}
-				n.OutputChannel <- n.createDocument(n, fileContents, stat)
+				n.OutputChannels[0] <- n.createDocument(n, fileContents, stat)
 			case event.Op == fsnotify.Create:
 				log.Debug("created a file in watched directory")
 			default:

@@ -11,13 +11,14 @@ type Node interface {
 	SetUUID(string)              // setter
 	SetConfig(map[string]string) // setter
 	SetInput(chan Document)
-	SetOutput(chan Document)
+	AddOutput(chan Document)
+	DelOutputs()
 	SetError(chan error)
 	SetControl(chan string)
 	GetUUID() string
 	GetConfig() map[string]string
 	GetInput() chan Document
-	GetOutput() chan Document
+	GetOutputs() []chan Document
 	GetError() chan error
 	GetControl() chan string
 	GetNodeType() string
@@ -31,7 +32,7 @@ type Node interface {
 type BaseNode struct {
 	UUID           string // make this a UUID eventually
 	InputChannel   chan Document
-	OutputChannel  chan Document
+	OutputChannels []chan Document
 	ErrorChannel   chan error
 	ControlChannel chan string // to "exit", "pause" etc.
 	Config         map[string]string
@@ -57,8 +58,12 @@ func (n *BaseNode) SetInput(input chan Document) {
 	n.InputChannel = input
 }
 
-func (n *BaseNode) SetOutput(input chan Document) {
-	n.OutputChannel = input
+func (n *BaseNode) AddOutput(input chan Document) {
+	n.OutputChannels = append(n.OutputChannels, input)
+}
+
+func (n *BaseNode) DelOutputs() {
+	n.OutputChannels = []chan Document{}
 }
 
 func (n *BaseNode) SetError(err chan error) {
@@ -81,8 +86,8 @@ func (n *BaseNode) GetInput() chan Document {
 	return n.InputChannel
 }
 
-func (n *BaseNode) GetOutput() chan Document {
-	return n.OutputChannel
+func (n *BaseNode) GetOutputs() []chan Document {
+	return n.OutputChannels
 }
 
 func (n *BaseNode) GetError() chan error {
@@ -98,5 +103,5 @@ func (n *BaseNode) GetNodeType() string {
 }
 
 func (n *BaseNode) ToString() string {
-	return fmt.Sprintf("{UUID: %v, NodeType: %v, Config: %v, InputChannel: %v, OutputChannel: %v}", n.GetUUID(), n.GetNodeType(), n.GetConfig(), n.GetInput(), n.GetOutput())
+	return fmt.Sprintf("{UUID: %v, NodeType: %v, Config: %v, InputChannel: %v, OutputChannel: %v}", n.GetUUID(), n.GetNodeType(), n.GetConfig(), n.GetInput(), n.GetOutputs())
 }

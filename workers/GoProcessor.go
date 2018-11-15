@@ -25,7 +25,7 @@ func (n *GoProcessorNode) GetNodeType() string {
 
 // ToString get the string version of this node
 func (n *GoProcessorNode) ToString() string {
-	return fmt.Sprintf("{UUID: %v, NodeType: %v, Config: %v, InputChannel: %v, OutputChannel: %v}", n.GetUUID(), n.GetNodeType(), n.GetConfig(), n.GetInput(), n.GetOutput())
+	return fmt.Sprintf("{UUID: %v, NodeType: %v, Config: %v, InputChannel: %v, OutputChannel: %v}", n.GetUUID(), n.GetNodeType(), n.GetConfig(), n.GetInput(), n.GetOutputs())
 }
 
 // Setup checks to make sure userCode exists. If it does, we run buildStringToSymbol, which
@@ -42,7 +42,6 @@ func (n *GoProcessorNode) Setup() { // TODO eventually just inject the code insi
 
 // Process run the worker. Uses the plugin we compiled in Setup, and runs it against incoming documents
 func (n *GoProcessorNode) Process() {
-	defer close(n.OutputChannel)
 	for {
 		select {
 		case command := <-n.ControlChannel:
@@ -56,7 +55,7 @@ func (n *GoProcessorNode) Process() {
 				log.Error("Could not process a document for node "+n.UUID, err)
 				break
 			}
-			n.OutputChannel <- n.buildDocumentFromValue(output, document)
+			n.OutputChannels[0] <- n.buildDocumentFromValue(output, document)
 
 		}
 	}

@@ -84,7 +84,7 @@ func ConnectWorkers(workersMap map[string]workers.Node, configs []WorkerConfig) 
 		contChannel := make(chan string)
 		errChannel := make(chan error)
 		v.SetInput(inChannel)
-		v.SetOutput(outChannel)
+		v.AddOutput(outChannel)
 		v.SetControl(contChannel)
 		v.SetError(errChannel)
 	}
@@ -94,8 +94,12 @@ func ConnectWorkers(workersMap map[string]workers.Node, configs []WorkerConfig) 
 		currentConfig := configs[i]
 		if len(currentConfig.Outputs) > 0 {
 			currentWorker := workersMap[currentConfig.UUID]
-			attachedWorker := workersMap[currentConfig.Outputs[0]]
-			currentWorker.SetOutput(attachedWorker.GetInput())
+			attachedWorkerUUIDS := currentConfig.Outputs
+			currentWorker.DelOutputs()
+			for _, UUID := range attachedWorkerUUIDS {
+				attachedWorker := workersMap[UUID]
+				currentWorker.AddOutput(attachedWorker.GetInput())
+			}
 		}
 	}
 	time.Sleep(3 * time.Second)

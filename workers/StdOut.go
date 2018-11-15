@@ -19,7 +19,7 @@ func (n *StdOutNode) GetNodeType() string {
 
 // ToString returns the string version of this node
 func (n *StdOutNode) ToString() string {
-	return fmt.Sprintf("{UUID: %v, NodeType: %v, Config: %v, InputChannel: %v, OutputChannel: %v}", n.GetUUID(), n.GetNodeType(), n.GetConfig(), n.GetInput(), n.GetOutput())
+	return fmt.Sprintf("{UUID: %v, NodeType: %v, Config: %v, InputChannel: %v, OutputChannel: %v}", n.GetUUID(), n.GetNodeType(), n.GetConfig(), n.GetInput(), n.GetOutputs())
 }
 
 // Setup runs any config updates needed before processing (non in this case)
@@ -29,7 +29,6 @@ func (n *StdOutNode) Setup() {
 
 // Process runs the worker. Outputs any incoming documents to stdout
 func (n *StdOutNode) Process() {
-	defer close(n.OutputChannel)
 	for {
 		select {
 		case inputDoc := <-n.InputChannel:
@@ -38,7 +37,6 @@ func (n *StdOutNode) Process() {
 		case command := <-n.ControlChannel:
 			if command == "exit" {
 				log.Info("exiting node " + n.UUID)
-				close(n.OutputChannel)
 				break
 			}
 

@@ -18,7 +18,7 @@ func (n *JoinerNode) GetNodeType() string {
 
 // ToString get the string version of this node
 func (n *JoinerNode) ToString() string {
-	return fmt.Sprintf("{UUID: %v, NodeType: %v, Config: %v, InputChannel: %v, OutputChannel: %v}", n.GetUUID(), n.GetNodeType(), n.GetConfig(), n.GetInput(), n.GetOutput())
+	return fmt.Sprintf("{UUID: %v, NodeType: %v, Config: %v, InputChannel: %v, OutputChannel: %v}", n.GetUUID(), n.GetNodeType(), n.GetConfig(), n.GetInput(), n.GetOutputs())
 }
 
 // Setup makes updates to config before processing
@@ -34,7 +34,6 @@ func (n *JoinerNode) Setup() {
 }
 
 func (n *JoinerNode) Process() {
-	defer close(n.OutputChannel)
 	for {
 		select {
 		case command := <-n.ControlChannel:
@@ -52,7 +51,7 @@ func (n *JoinerNode) Process() {
 			currentLength = len(n.InProgresDocuments[document.Source])
 			if currentLength >= document.TotalFragments {
 				newVal := strings.Join(n.InProgresDocuments[document.Source][:], n.Config["delimiter"])
-				n.OutputChannel <- n.createDocFromValue(newVal, document)
+				n.OutputChannels[0] <- n.createDocFromValue(newVal, document)
 				delete(n.InProgresDocuments, document.Source)
 			}
 		}

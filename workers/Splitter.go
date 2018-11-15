@@ -21,7 +21,7 @@ func (n *SplitterNode) GetNodeType() string {
 
 // ToString get the string version of this node
 func (n *SplitterNode) ToString() string {
-	return fmt.Sprintf("{UUID: %v, NodeType: %v, Config: %v, InputChannel: %v, OutputChannel: %v}", n.GetUUID(), n.GetNodeType(), n.GetConfig(), n.GetInput(), n.GetOutput())
+	return fmt.Sprintf("{UUID: %v, NodeType: %v, Config: %v, InputChannel: %v, OutputChannel: %v}", n.GetUUID(), n.GetNodeType(), n.GetConfig(), n.GetInput(), n.GetOutputs())
 }
 
 // Setup make any config updates before processing
@@ -36,7 +36,6 @@ func (n *SplitterNode) Setup() {
 // Process run the worker. Splits the value of a document based on a delimiter
 // Writes these values into new documents, and outputs them
 func (n *SplitterNode) Process() {
-	defer close(n.OutputChannel)
 	for {
 		select {
 		case command := <-n.ControlChannel:
@@ -47,7 +46,7 @@ func (n *SplitterNode) Process() {
 		case document := <-n.InputChannel:
 			splitValues := bytes.Split(document.Value, []byte(n.Config["delimiter"]))
 			for index, value := range splitValues {
-				n.OutputChannel <- n.createDocFromString(value, document, index, len(splitValues))
+				n.OutputChannels[0] <- n.createDocFromString(value, document, index, len(splitValues))
 			}
 		}
 	}

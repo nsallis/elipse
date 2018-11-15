@@ -26,7 +26,7 @@ func (n *DFONode) GetNodeType() string {
 
 // ToString get the string version of this node
 func (n *DFONode) ToString() string {
-	return fmt.Sprintf("{UUID: %v, NodeType: %v, Config: %v, InputChannel: %v, OutputChannel: %v}", n.GetUUID(), n.GetNodeType(), n.GetConfig(), n.GetInput(), n.GetOutput())
+	return fmt.Sprintf("{UUID: %v, NodeType: %v, Config: %v, InputChannel: %v, OutputChannel: %v}", n.GetUUID(), n.GetNodeType(), n.GetConfig(), n.GetInput(), n.GetOutputs())
 }
 
 // Setup make any config updates before processing
@@ -48,7 +48,6 @@ func (n *DFONode) Setup() {
 // Process run the worker. Writes the value of a document to the file. Can optionally
 // append to the file (if append flag is true)
 func (n *DFONode) Process() {
-	defer close(n.OutputChannel)
 	var appendFlag bool
 	if n.Config["append"] == "true" {
 		appendFlag = true
