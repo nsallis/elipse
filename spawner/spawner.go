@@ -53,6 +53,8 @@ func getNodeFromTypeString(typeName string) workers.Node {
 		node = &workers.GoProcessorNode{}
 	case "Joiner":
 		node = &workers.JoinerNode{}
+	case "LoadBalancer":
+		node = &workers.LoadBalancerNode{}
 	default:
 		node = &workers.BaseNode{} // TODO this will eventually throw a not implemented
 		// error because SetUUID is not implemented
