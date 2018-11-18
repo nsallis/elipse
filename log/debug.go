@@ -7,8 +7,9 @@ import (
 )
 
 // Debug logs a debug message
-func Debug(debugText string) {
+func Debug(debugText string, a ...interface{}) {
 	if logLevel >= 3 {
+		debugText = fmt.Sprintf(debugText, a)
 		red := color.New(color.FgHiMagenta).SprintFunc()
 		var debugMessage string
 		debugMessage = fmt.Sprintf("%s\n\n", debugText)

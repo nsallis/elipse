@@ -18,28 +18,27 @@
     "outputs": [
       "3"
     ]
-  }, {
-    "UUID": "3",
-    "nodeType": "LoadBalancer",
-    "config": {},
-    "outputs": [
-      "4"
-    ]
-  }, {
+  },
+    {
+      "UUID": "3",
+      "nodeType": "LoadBalancer",
+      "outputs": ["4", "5"]
+    },
+ {
     "UUID": "4",
     "nodeType": "GoProcessor",
     "config": {
       "userCode": "package main\nimport(\n\"strings\"\n)\ntype CustomProcessor string\nfunc(cp CustomProcessor) Process(line string) (string, error) {\ncols := strings.Split(line, \",\")\nif len(cols) <= 5 {\nreturn \"\",nil\n}\nreturn cols[0] + \",\" + cols[2] + \",\" + cols[3] + \",\" + strings.Replace(cols[5], \".\", \"-\", -1),nil\n}\nvar Plugin CustomProcessor"
     },
     "outputs": [
-      "5"
+      "6"
     ]
   },
-  {
+{
     "UUID": "5",
-    "nodeType": "Joiner",
+    "nodeType": "GoProcessor",
     "config": {
-      "delimiter": "\n"
+      "userCode": "package main\nimport(\n\"strings\"\n)\ntype CustomProcessor string\nfunc(cp CustomProcessor) Process(line string) (string, error) {\ncols := strings.Split(line, \",\")\nif len(cols) <= 5 {\nreturn \"\",nil\n}\nreturn cols[0] + \",\" + cols[2] + \",\" + cols[3] + \",\" + strings.Replace(cols[5], \".\", \"-\", -1),nil\n}\nvar Plugin CustomProcessor"
     },
     "outputs": [
       "6"
@@ -47,6 +46,16 @@
   },
   {
     "UUID": "6",
+    "nodeType": "Joiner",
+    "config": {
+      "delimiter": "\n"
+    },
+    "outputs": [
+      "7"
+    ]
+  },
+  {
+    "UUID": "7",
     "nodeType": "DFO",
     "config": {
       "filepath": "./test_data/test_runs/",

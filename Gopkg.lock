@@ -26,26 +26,14 @@
   version = "v0.0.4"
 
 [[projects]]
-  name = "github.com/mattn/go-runewidth"
-  packages = ["."]
-  revision = "ce7b0b5c7b45a81508558cd1dba6bb1e4ddb51bb"
-  version = "v0.0.3"
-
-[[projects]]
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
   revision = "95b1ffbd15a57cc5abb3f04402b9e8ec0016a52c"
 
-[[projects]]
-  name = "gopkg.in/cheggaaa/pb.v1"
-  packages = ["."]
-  revision = "007b75a044e968336a69a6c0c617251ab62ac14c"
-  version = "v1.0.26"
-
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "9cbd84262190477c57f5ae4781250d566f01e1a6909e4e14af2b74137e4cce54"
+  inputs-digest = "ffa5a4a994eb790b3c3daa5cc562e6aae0332039d2855448a536c6dc3d49617b"
   solver-name = "gps-cdcl"
   solver-version = 1
