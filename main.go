@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/nsallis/elipse/log"
+	"github.com/nsallis/elipse/server"
 	"github.com/nsallis/elipse/spawner"
 	// "github.com/nsallis/elipse/util"
 	// "time"
@@ -12,10 +13,16 @@ import (
 )
 
 func main() {
+
 	log.InitLogs()
 	log.Info("Reading worker configs")
 	config := spawner.CreateWorkerConfigFromFile("./test_data/worker_example.json")
 	workersMap, _ := spawner.SpawnWorkers(config)
+
+	server := server.Server{}
+	server.Initialize(workersMap)
+	server.Start(3333)
+
 	log.Info("Spawning workers")
 	spawner.ConnectWorkers(workersMap, config)
 	for _, v := range workersMap {
