@@ -1,6 +1,8 @@
 package server
 
 import (
+	"encoding/json"
+	// "github.com/Jeffail/gabs"
 	"github.com/nsallis/elipse/log"
 )
 
@@ -15,6 +17,18 @@ func (e *Endpoints) Handshake(req Request, res *Response) error {
 }
 
 func (e *Endpoints) GetWorkers(req Request, res *Response) error {
-	log.Debug("Requested workers with payload: %v", req.Payload)
+	// must pass Payload as \ escaped string!
+	// jsonParsed, err := gabs.ParseJSON([]byte(req.Payload))
+	// if err != nil {
+	// 	log.Error("Unable to parse payload for rpc request", err)
+	// }
+	// log.Debug("Requested workers with payload: %v", jsonParsed)
+	// foo := jsonParsed.Search("foo")
+	// log.Debug("foo: %s", foo)
+	json, err := json.Marshal(WorkersMap)
+	if err != nil {
+		log.Error("Could not convert workersMap to json", err)
+	}
+	res.Payload = string(json)
 	return nil
 }

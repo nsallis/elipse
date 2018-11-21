@@ -21,7 +21,7 @@ func main() {
 
 	server := server.Server{}
 	server.Initialize(workersMap)
-	server.Start(3333)
+	go server.Start(3333)
 
 	log.Info("Spawning workers")
 	spawner.ConnectWorkers(workersMap, config)

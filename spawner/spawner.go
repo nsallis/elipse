@@ -103,6 +103,7 @@ func ConnectWorkers(workersMap map[string]workers.Node, configs []WorkerConfig) 
 			for _, UUID := range attachedWorkerUUIDS {
 				attachedWorker := workersMap[UUID]
 				currentWorker.AddOutput(attachedWorker.GetInput())
+				currentWorker.AddOutputNode(UUID)
 			}
 		}
 	}

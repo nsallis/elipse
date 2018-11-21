@@ -11,6 +11,8 @@ type Node interface {
 	SetUUID(string)              // setter
 	SetConfig(map[string]string) // setter
 	SetInput(chan Document)
+	AddOutputNode(string)
+	DelOutputNode(string)
 	AddOutput(chan Document)
 	DelOutputs()
 	SetError(chan error)
@@ -22,6 +24,7 @@ type Node interface {
 	GetError() chan error
 	GetControl() chan string
 	GetNodeType() string
+	GetOutputNodes() []string
 	ToString() string
 	// Output() Document // should always return a document
 	// Error() (NodeError) // should always return an error or nil
@@ -30,12 +33,13 @@ type Node interface {
 // NodeStruct defined all of the values on a node. Every type of
 // Node is of type NodeStruct
 type BaseNode struct {
-	UUID           string // make this a UUID eventually
-	InputChannel   chan Document
-	OutputChannels []chan Document
-	ErrorChannel   chan error
-	ControlChannel chan string // to "exit", "pause" etc.
+	UUID           string          // make this a UUID eventually
+	InputChannel   chan Document   `json:"-"`
+	OutputChannels []chan Document `json:"-"`
+	ErrorChannel   chan error      `json:"-"`
+	ControlChannel chan string     `json:"-"` // to "exit", "pause" etc.
 	Config         map[string]string
+	OutputNodes    []string `json:"Outputs"` // used for serializing connections between nodes
 }
 
 func (n *BaseNode) Setup() {
@@ -56,6 +60,20 @@ func (n *BaseNode) SetConfig(config map[string]string) {
 
 func (n *BaseNode) SetInput(input chan Document) {
 	n.InputChannel = input
+}
+
+func (n *BaseNode) AddOutputNode(uuid string) {
+	n.OutputNodes = append(n.OutputNodes, uuid)
+}
+
+func (n *BaseNode) DelOutputNode(uuid string) {
+	var newOutputs []string
+	for _, item := range n.OutputNodes {
+		if item != uuid {
+			newOutputs = append(newOutputs, uuid)
+		}
+	}
+	n.OutputNodes = newOutputs
 }
 
 func (n *BaseNode) AddOutput(input chan Document) {
@@ -100,6 +118,10 @@ func (n *BaseNode) GetControl() chan string {
 
 func (n *BaseNode) GetNodeType() string {
 	return "BaseNode"
+}
+
+func (n *BaseNode) GetOutputNodes() []string {
+	return n.OutputNodes
 }
 
 func (n *BaseNode) ToString() string {

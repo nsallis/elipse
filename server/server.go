@@ -8,12 +8,14 @@ import (
 	"net/rpc"
 )
 
+var WorkersMap map[string]workers.Node
+
 type Server struct {
 	WorkersMap map[string]workers.Node
 }
 
 func (s *Server) Initialize(workersMap map[string]workers.Node) {
-	s.WorkersMap = workersMap
+	WorkersMap = workersMap
 }
 
 func (s *Server) Start(port int) {
