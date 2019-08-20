@@ -2,7 +2,7 @@
 
 ### hooking up a node with multiple children
 
-* we should create channels for each node, and then look at the child component, and use its input channel as the parent's output channel. That way we can easily accomidate multiple children down the road
+* we should create channels for each node, and then look at the child component, and use its input channel as the parent's output channel. That way we can easily accommodate multiple children down the road
 
 ### ordered nodes
 
